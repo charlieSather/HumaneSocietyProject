@@ -334,4 +334,4 @@ App.config
 HumaneSociety.dbml
 HumaneSociety.dbml.layout
 HumaneSociety.designer.cs
-HumaneSociety.App.config
+Settings.Designer.cs
