@@ -178,6 +178,7 @@ namespace HumaneSociety
         }
 
         public void UpdateAnimal(Animal animal, Dictionary<int, string> updates = null)
+
         {
             if(updates == null)
             {
