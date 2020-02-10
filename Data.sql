@@ -50,14 +50,3 @@ INSERT INTO Employees VALUES('Billy','Mays','bmays','oxyclean',3,'bmays@humane.o
 INSERT INTO Employees VALUES('Dwayne','Johnson','therock','ilikerocks',4,'therock@humane.org');
 INSERT INTO Employees VALUES('Giannis','Antetokounmpo','greekfreak','iamtall',5,'greekfreak@humane.org');
 
-
-
-
-
-
-
-
-
-
-
-

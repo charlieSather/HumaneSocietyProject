@@ -291,7 +291,7 @@ namespace HumaneSociety
             {
                 employee = Query.RetrieveEmployeeUser(email, employeeNumber);
             }
-            catch
+            catch(Exception ex)
             {
                 UserInterface.DisplayUserOptions("Employee not found please contact your administrator");
                 PointOfEntry.Run();
