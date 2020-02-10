@@ -254,6 +254,7 @@ namespace HumaneSociety
         internal static void AddAnimal(Animal animal)
         {
             db.Animals.InsertOnSubmit(animal);
+            db.SubmitChanges();
         }
 
         internal static Animal GetAnimalByID(int id)
@@ -263,21 +264,43 @@ namespace HumaneSociety
 
         internal static void UpdateAnimal(int animalId, Dictionary<int, string> updates)
         {
-            Animal animalFromDb = null;
-            db.Animals.Where(a => a.AnimalId == animalId);
-
-            animalFromDb.Category = db.Categories.FirstOrDefault(a => a.Name == updates[1]);
-            animalFromDb.Name = updates[2];
-            animalFromDb.Age = Convert.ToInt32(updates[3]);
-            animalFromDb.Demeanor = updates[4];
-            animalFromDb.KidFriendly = Convert.ToBoolean(updates[5]);
-            animalFromDb.PetFriendly = Convert.ToBoolean(updates[6]);
-            animalFromDb.Weight = Convert.ToInt32(updates[7]);
+            foreach(var update in updates)
+            {
+                switch (update.Key)
+                {
+                    case 1:
+                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Category = db.Categories.Where(b => b.Name == update.Value).FirstOrDefault();
+                        break;
+                    case 2:
+                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Name = update.Value;
+                        break;
+                    case 3:
+                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Age = Int32.Parse(update.Value);
+                        break;
+                    case 4:
+                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Demeanor = update.Value;
+                        break;
+                    case 5:
+                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().KidFriendly = Convert.ToBoolean(update.Value);
+                        break;
+                    case 6:
+                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().PetFriendly = Convert.ToBoolean(update.Value);
+                        break;
+                    case 7:
+                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Weight = Int32.Parse(update.Value);
+                        break;
+                    default:
+                        break;
+                }
+                //db.SubmitChanges();
+            }
+            db.SubmitChanges();
         }
 
         internal static void RemoveAnimal(Animal animal)
         {
-            throw new NotImplementedException();
+            db.Animals.DeleteOnSubmit(animal);
+            db.SubmitChanges();
         }
         
         // TODO: Animal Multi-Trait Search
@@ -321,23 +344,50 @@ namespace HumaneSociety
         // TODO: Misc Animal Things
         internal static int GetCategoryId(string categoryName)
         {
-            throw new NotImplementedException();
+            return db.Categories.Where(a => a.Name == categoryName).Select(a => a.CategoryId).FirstOrDefault();
         }
         
         internal static Room GetRoom(int animalId)
         {
-            throw new NotImplementedException();
+            return db.Rooms.Where(a => a.AnimalId == animalId).FirstOrDefault();
         }
         
         internal static int GetDietPlanId(string dietPlanName)
         {
-            throw new NotImplementedException();
+            return db.DietPlans.Where(a => a.Name == dietPlanName).Select(a => a.DietPlanId).FirstOrDefault();
         }
 
         // TODO: Adoption CRUD Operations
         internal static void Adopt(Animal animal, Client client)
         {
-            throw new NotImplementedException();
+            if(animal.AdoptionStatus == "available")
+            {
+                try
+                {
+                    Adoption adoption = new Adoption();
+                    adoption.ClientId = client.ClientId;
+                    adoption.AnimalId = animal.AnimalId;
+                    adoption.ApprovalStatus = "pending";
+                    animal.AdoptionStatus = "pending";
+                    adoption.AdoptionFee = 75;
+                    adoption.PaymentCollected = false;
+
+                    client.Adoptions.Add(adoption);
+                    animal.Adoptions.Add(adoption);
+
+                    db.Adoptions.InsertOnSubmit(adoption);
+                    db.SubmitChanges();
+
+                }
+                catch (Exception)
+                {
+                    UserInterface.DisplayUserOptions("Error.");
+                }
+            }
+            else
+            {
+                UserInterface.DisplayUserOptions("That animal is not available.");
+            }
         }
 
         internal static IQueryable<Adoption> GetPendingAdoptions()
