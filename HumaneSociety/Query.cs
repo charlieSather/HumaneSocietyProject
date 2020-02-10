@@ -392,23 +392,53 @@ namespace HumaneSociety
 
         internal static IQueryable<Adoption> GetPendingAdoptions()
         {
-            throw new NotImplementedException();
+            return db.Adoptions.Where(x => x.ApprovalStatus == "pending");
         }
 
         internal static void UpdateAdoption(bool isAdopted, Adoption adoption)
         {
-            throw new NotImplementedException();
+            Adoption adoptionFromDb = null;
+
+            try
+            {
+                adoptionFromDb = db.Adoptions.Where(x => x.ClientId == adoption.ClientId && x.AnimalId == adoption.AnimalId).FirstOrDefault();
+            }
+            catch
+            {
+                UserInterface.DisplayUserOptions("Could not find adoption case in database.");
+                return;
+            }
+
+            if (isAdopted)
+            {
+                adoptionFromDb.ApprovalStatus = "accepted";
+            }
+            else
+            {
+                adoptionFromDb.ApprovalStatus = "declined";
+            }
+            db.SubmitChanges();
         }
 
         internal static void RemoveAdoption(int animalId, int clientId)
         {
-            throw new NotImplementedException();
+            Adoption adoption = db.Adoptions.Where(x => x.AnimalId == animalId && x.ClientId == clientId).FirstOrDefault();
+            db.Adoptions.DeleteOnSubmit(adoption);
+
+            try
+            {
+                db.SubmitChanges();
+            }
+            catch
+            {
+                UserInterface.DisplayUserOptions("Error on trying to delete adoption");
+            }
         }
 
         // TODO: Shots Stuff
         internal static IQueryable<AnimalShot> GetShots(Animal animal)
         {
-            throw new NotImplementedException();
+            return db.AnimalShots.Where(x => x.AnimalId == animal.AnimalId);
         }
 
         internal static void UpdateShot(string shotName, Animal animal)
