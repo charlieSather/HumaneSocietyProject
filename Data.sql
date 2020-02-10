@@ -1,3 +1,7 @@
+  
+
+
+
 INSERT INTO Categories VALUES('');
 INSERT INTO Categories VALUES('');
 INSERT INTO Categories VALUES('');
