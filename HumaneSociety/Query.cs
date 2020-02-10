@@ -214,21 +214,25 @@ namespace HumaneSociety
 
         internal static void UpdateEmployee(Employee employee)
         {
-            Employee employeeFromDb = db.Employees.FirstOrDefault(e => e.EmployeeNumber == employee.EmployeeNumber);
+            Employee employeeFromDb = null;
 
-            if (employeeFromDb is null)
+            try
             {
-                UserInterface.DisplayUserOptions("Employee not found.");
+                employeeFromDb = db.Employees.FirstOrDefault(e => e.EmployeeNumber == employee.EmployeeNumber);
             }
-            else
+            catch(InvalidOperationException e)
             {
-                employeeFromDb.FirstName = employee.FirstName;
-                employeeFromDb.LastName = employee.LastName;
-                employeeFromDb.EmployeeNumber = employee.EmployeeNumber;
-                employeeFromDb.Email = employee.Email;
+                Console.WriteLine("No employees have an EmployeeNumber that matches the employee passed in.");
+                Console.WriteLine("No updates have been made.");
+                return;
+            }
 
-                db.SubmitChanges();
-            }
+            employeeFromDb.FirstName = employee.FirstName;
+            employeeFromDb.LastName = employee.LastName;
+            employeeFromDb.EmployeeNumber = employee.EmployeeNumber;
+            employeeFromDb.Email = employee.Email;
+
+            db.SubmitChanges();
         }
 
         internal static void DeleteEmployee(Employee employee)
@@ -259,7 +263,7 @@ namespace HumaneSociety
         }
 
         internal static void UpdateAnimal(int animalId, Dictionary<int, string> updates)
-        {            
+        {
             throw new NotImplementedException();
         }
 
