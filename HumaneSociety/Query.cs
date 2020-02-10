@@ -131,7 +131,7 @@ namespace HumaneSociety
 
             db.SubmitChanges();
         }
-
+        
         internal static Employee RetrieveEmployeeUser(string email, int employeeNumber)
         {
             Employee employeeFromDb = db.Employees.Where(e => e.Email == email && e.EmployeeNumber == employeeNumber).FirstOrDefault();
@@ -189,7 +189,7 @@ namespace HumaneSociety
 
             if(employeeFromDb is null)
             {
-                db.Employees.InsertOnSubmit(employeeFromDb);
+                db.Employees.InsertOnSubmit(employee);
                 db.SubmitChanges();
             }
             else
