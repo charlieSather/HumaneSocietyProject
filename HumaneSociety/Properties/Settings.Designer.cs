@@ -22,5 +22,17 @@ namespace HumaneSociety.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=DESKTOP-9TMFE3L\\SQLEXPRESS;Integrated Security=True;Connect Timeout=3" +
+            "0;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSu" +
+            "bnetFailover=False")]
+        public string HumaneSocietyConnectionString {
+            get {
+                return ((string)(this["HumaneSocietyConnectionString"]));
+            }
+        }
     }
 }
