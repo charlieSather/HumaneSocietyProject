@@ -281,9 +281,41 @@ namespace HumaneSociety
         }
         
         // TODO: Animal Multi-Trait Search
-        internal static IQueryable<Animal> SearchForAnimalsByMultipleTraits(Dictionary<int, string> updates) // parameter(s)?
+        internal static IQueryable<Animal> SearchForAnimalsByMultipleTraits(Dictionary<int, string> traits) // parameter(s)?
         {
-            throw new NotImplementedException();
+            var animals = db.Animals.AsQueryable();
+
+            foreach(var trait in traits)
+            {
+                switch (trait.Key)
+                {
+                    case 1:
+                        animals = animals.Where(x => x.Category.Name == trait.Value);
+                        break;
+                    case 2:
+                        animals = animals.Where(x => x.Name == trait.Value);
+                        break;
+                    case 3:
+                        animals = animals.Where(x => x.Age == Int32.Parse(trait.Value));
+                        break;
+                    case 4:
+                        animals = animals.Where(x => x.Demeanor == trait.Value);
+                        break;
+                    case 5:
+                        animals = animals.Where(x => x.KidFriendly == Convert.ToBoolean(trait.Value));
+                        break;
+                    case 6:
+                        animals = animals.Where(x => x.PetFriendly == Convert.ToBoolean(trait.Value));
+                        break;
+                    case 7:
+                        animals = animals.Where(x => x.Weight == Int32.Parse(trait.Value));
+                        break;
+                    case 8:
+                        animals = animals.Where(x => x.AnimalId == Int32.Parse(trait.Value));
+                        break;
+                }
+            }
+            return animals;
         }
          
         // TODO: Misc Animal Things
