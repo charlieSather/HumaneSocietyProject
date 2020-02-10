@@ -254,6 +254,7 @@ namespace HumaneSociety
         internal static void AddAnimal(Animal animal)
         {
             db.Animals.InsertOnSubmit(animal);
+            db.SubmitChanges();
         }
 
         internal static Animal GetAnimalByID(int id)
@@ -288,16 +289,18 @@ namespace HumaneSociety
                     case 7:
                         db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Weight = Int32.Parse(update.Value);
                         break;
-                    case 8:
-                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().AnimalId = Int32.Parse(update.Value);
+                    default:
                         break;
                 }
+                //db.SubmitChanges();
             }
+            db.SubmitChanges();
         }
 
         internal static void RemoveAnimal(Animal animal)
         {
             db.Animals.DeleteOnSubmit(animal);
+            db.SubmitChanges();
         }
         
         // TODO: Animal Multi-Trait Search
@@ -325,7 +328,34 @@ namespace HumaneSociety
         // TODO: Adoption CRUD Operations
         internal static void Adopt(Animal animal, Client client)
         {
-            throw new NotImplementedException();
+            if(animal.AdoptionStatus == "available")
+            {
+                try
+                {
+                    Adoption adoption = new Adoption();
+                    adoption.ClientId = client.ClientId;
+                    adoption.AnimalId = animal.AnimalId;
+                    adoption.ApprovalStatus = "pending";
+                    animal.AdoptionStatus = "pending";
+                    adoption.AdoptionFee = 75;
+                    adoption.PaymentCollected = false;
+
+                    client.Adoptions.Add(adoption);
+                    animal.Adoptions.Add(adoption);
+
+                    db.Adoptions.InsertOnSubmit(adoption);
+                    db.SubmitChanges();
+
+                }
+                catch (Exception)
+                {
+                    UserInterface.DisplayUserOptions("Error.");
+                }
+            }
+            else
+            {
+                UserInterface.DisplayUserOptions("That animal is not available.");
+            }
         }
 
         internal static IQueryable<Adoption> GetPendingAdoptions()
