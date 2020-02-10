@@ -443,7 +443,54 @@ namespace HumaneSociety
 
         internal static void UpdateShot(string shotName, Animal animal)
         {
-            throw new NotImplementedException();
+            AnimalShot animalShotFromDb = null;
+
+
+            Shot shotFromDb = db.Shots.FirstOrDefault(x => x.Name == shotName);
+
+            if(shotFromDb is null)
+            {
+                Shot shot = new Shot
+                {
+                    Name = shotName
+                };
+                db.Shots.InsertOnSubmit(shot);
+                db.SubmitChanges();
+
+                shotFromDb = shot;
+            }
+
+            try
+            {
+                animalShotFromDb = db.AnimalShots.Where(x => x.AnimalId == animal.AnimalId && x.ShotId == animalShotFromDb.ShotId).FirstOrDefault();
+            }
+            catch
+            {
+                UserInterface.DisplayUserOptions("Couldn't find animal shot to update");
+                return;
+            }  
+            
+            if(animalShotFromDb is null)
+            {
+                db.AnimalShots.InsertOnSubmit(new AnimalShot { AnimalId = animal.AnimalId, ShotId = shotFromDb.ShotId, DateReceived = DateTime.Now });                
+            }
+            else
+            {
+                animalShotFromDb.ShotId = shotFromDb.ShotId;
+            }
+
+            try
+            {
+                db.SubmitChanges();
+            }
+            catch
+            {
+                UserInterface.DisplayUserOptions("Error Updating AnimalShot");
+            }
+
+            
+
+
         }
     }
 }
