@@ -157,7 +157,7 @@ namespace HumaneSociety
         {
             Employee employeeWithUserName = db.Employees.Where(e => e.UserName == userName).FirstOrDefault();
 
-            return employeeWithUserName == null;
+            return employeeWithUserName != null;
         }
 
 
@@ -166,8 +166,86 @@ namespace HumaneSociety
         // TODO: Allow any of the CRUD operations to occur here
         internal static void RunEmployeeQueries(Employee employee, string crudOperation)
         {
-            throw new NotImplementedException();
+            switch (crudOperation)
+            {
+                case ("create"):
+                    AddEmployee(employee);
+                    break;
+                case ("read"):
+                    GetEmployeeByNumber(employee);
+                    break;
+                case ("update"):
+                    UpdateEmployee(employee);
+                    break;
+                case ("delete"):
+                    DeleteEmployee(employee);
+                    break;
+            }
         }
+
+        internal static void AddEmployee(Employee employee)
+        {
+            Employee employeeFromDb = db.Employees.Where(e => e.EmployeeNumber == employee.EmployeeNumber).FirstOrDefault();
+
+            if(employeeFromDb is null)
+            {
+                db.Employees.InsertOnSubmit(employeeFromDb);
+                db.SubmitChanges();
+            }
+            else
+            {
+               UserInterface.DisplayUserOptions("Employee already exists. Can't add into database.");
+            }
+        }
+
+        internal static void GetEmployeeByNumber(Employee employee)
+        {
+            Employee employeeFromDb = db.Employees.FirstOrDefault(e => e.EmployeeNumber == employee.EmployeeNumber);
+
+            if (employeeFromDb is null)
+            {
+                UserInterface.DisplayUserOptions("Employee not found.");
+            }
+            else
+            {
+                UserInterface.DisplayUserOptions($"Hello {employeeFromDb.FirstName} {employeeFromDb.LastName}!");
+            }
+        }
+
+        internal static void UpdateEmployee(Employee employee)
+        {
+            Employee employeeFromDb = db.Employees.FirstOrDefault(e => e.EmployeeNumber == employee.EmployeeNumber);
+
+            if (employeeFromDb is null)
+            {
+                UserInterface.DisplayUserOptions("Employee not found.");
+            }
+            else
+            {
+                employeeFromDb.FirstName = employee.FirstName;
+                employeeFromDb.LastName = employee.LastName;
+                employeeFromDb.EmployeeNumber = employee.EmployeeNumber;
+                employeeFromDb.Email = employee.Email;
+
+                db.SubmitChanges();
+            }
+        }
+
+        internal static void DeleteEmployee(Employee employee)
+        {
+            Employee employeeFromDb = db.Employees.FirstOrDefault(e => e.EmployeeNumber == employee.EmployeeNumber);
+
+            if (employeeFromDb is null)
+            {
+                Console.WriteLine("Employee not found.");
+            }
+            else
+            {
+                db.Employees.DeleteOnSubmit(employeeFromDb);
+                db.SubmitChanges();
+            }
+        }
+
 
         // TODO: Animal CRUD Operations
         internal static void AddAnimal(Animal animal)
