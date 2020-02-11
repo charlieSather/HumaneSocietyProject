@@ -51,6 +51,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HumaneSociety.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Parse.cs" />
     <Compile Include="PointOfEntry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,6 +66,9 @@
     <Compile Include="UserInterface.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="animals.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="HumaneSociety.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>

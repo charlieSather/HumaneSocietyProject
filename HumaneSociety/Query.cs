@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace HumaneSociety
 {
@@ -222,17 +224,21 @@ namespace HumaneSociety
             }
             catch (InvalidOperationException e)
             {
-                Console.WriteLine("No employees have an EmployeeNumber that matches the employee passed in.");
-                Console.WriteLine("No updates have been made.");
+                UserInterface.DisplayUserOptions(new List<string> { "No employees have an EmployeeNumber that matches the employee passed in.", "No updates have been made." });
                 return;
             }
-
-            employeeFromDb.FirstName = employee.FirstName;
-            employeeFromDb.LastName = employee.LastName;
-            employeeFromDb.EmployeeNumber = employee.EmployeeNumber;
-            employeeFromDb.Email = employee.Email;
-
-            db.SubmitChanges();
+            try
+            {
+                employeeFromDb.FirstName = employee.FirstName;
+                employeeFromDb.LastName = employee.LastName;
+                employeeFromDb.EmployeeNumber = employee.EmployeeNumber;
+                employeeFromDb.Email = employee.Email;
+                db.SubmitChanges();
+            }
+            catch (Exception ex)
+            {
+                UserInterface.DisplayUserOptions(ex.Message);
+            }
         }
 
         internal static void DeleteEmployee(Employee employee)
@@ -241,7 +247,7 @@ namespace HumaneSociety
 
             if (employeeFromDb is null)
             {
-                Console.WriteLine("Employee not found.");
+                UserInterface.DisplayUserOptions("Employee not found.");
             }
             else
             {
@@ -259,7 +265,7 @@ namespace HumaneSociety
                 //available room will be set to whatever room has the first case of an animal id being null
                 //otherwise, if there are no rooms with no animal id, the available room will remain null
                 availableRoom = db.Rooms.FirstOrDefault(a => a.AnimalId == null);
-                if(availableRoom == null)
+                if (availableRoom == null)
                 {
                     UserInterface.DisplayUserOptions("Sorry, no more available rooms, can't add animal.");
                 }
@@ -271,7 +277,7 @@ namespace HumaneSociety
                     db.SubmitChanges();
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 UserInterface.DisplayUserOptions("There are no available rooms");
             }
@@ -319,8 +325,15 @@ namespace HumaneSociety
 
         internal static void RemoveAnimal(Animal animal)
         {
-            db.Animals.DeleteOnSubmit(animal);
-            db.SubmitChanges();
+            try
+            {
+                db.Animals.DeleteOnSubmit(animal);
+                db.SubmitChanges();
+            }
+            catch(Exception)
+            {
+                UserInterface.DisplayUserOptions("Error deleting animal from database");
+            }
         }
 
         // TODO: Animal Multi-Trait Search
@@ -338,22 +351,22 @@ namespace HumaneSociety
                         animals = animals.Where(x => x.Name == trait.Value);
                         break;
                     case 3:
-                        animals = animals.Where(x => x.Age == Int32.Parse(trait.Value));
+                        animals = animals.Where(x => x.Age == (Parse.IsNumber(trait.Value) ? Int32.Parse(trait.Value) : (int?) null));
                         break;
                     case 4:
                         animals = animals.Where(x => x.Demeanor == trait.Value);
                         break;
                     case 5:
-                        animals = animals.Where(x => x.KidFriendly == Convert.ToBoolean(trait.Value));
+                        animals = animals.Where(x => x.KidFriendly == Parse.StringIntToBoolean(trait.Value));
                         break;
                     case 6:
-                        animals = animals.Where(x => x.PetFriendly == Convert.ToBoolean(trait.Value));
+                        animals = animals.Where(x => x.PetFriendly == Parse.StringIntToBoolean(trait.Value));
                         break;
                     case 7:
-                        animals = animals.Where(x => x.Weight == Int32.Parse(trait.Value));
+                        animals = animals.Where(x => x.Weight == (Parse.IsNumber(trait.Value)? Int32.Parse(trait.Value) : (int?) null));
                         break;
                     case 8:
-                        animals = animals.Where(x => x.AnimalId == Int32.Parse(trait.Value));
+                        animals = animals.Where(x => x.AnimalId == (Parse.IsNumber(trait.Value)? Int32.Parse(trait.Value) : (int?) null));
                         break;
                 }
             }
@@ -379,7 +392,7 @@ namespace HumaneSociety
         // TODO: Adoption CRUD Operations
         internal static void Adopt(Animal animal, Client client)
         {
-            if(animal.AdoptionStatus == "Available")
+            if (animal.AdoptionStatus == "Available")
             {
                 try
                 {
@@ -413,7 +426,7 @@ namespace HumaneSociety
 
         internal static void UpdateAdoption(bool isAdopted, Adoption adoption)
         {
-            try 
+            try
             {
                 if (isAdopted)
                 {
@@ -464,34 +477,29 @@ namespace HumaneSociety
                 };
                 db.Shots.InsertOnSubmit(shot);
                 db.SubmitChanges();
-                
+
                 shotFromDb = shot;
             }
             try
             {
-                animalShotFromDb = db.AnimalShots.Where(x => x.AnimalId == animal.AnimalId && x.ShotId == animalShotFromDb.ShotId).FirstOrDefault();
+                animalShotFromDb = db.AnimalShots.Where(x => x.AnimalId == animal.AnimalId && x.ShotId == shotFromDb.ShotId).FirstOrDefault();
             }
             catch
             {
-                UserInterface.DisplayUserOptions("Couldn't find animal shot to update");
+                UserInterface.DisplayUserOptions("Error querying database looking for animalShot");
                 return;
             }
             if (animalShotFromDb is null)
             {
                 db.AnimalShots.InsertOnSubmit(new AnimalShot { AnimalId = animal.AnimalId, ShotId = shotFromDb.ShotId, DateReceived = DateTime.Now });
+                db.SubmitChanges();
             }
             else
             {
                 animalShotFromDb.ShotId = shotFromDb.ShotId;
-            }
-            try
-            {
                 db.SubmitChanges();
             }
-            catch
-            {
-                UserInterface.DisplayUserOptions("Error Updating AnimalShot");
-            }
         }
+      
     }
 }
