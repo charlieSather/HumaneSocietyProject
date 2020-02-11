@@ -497,6 +497,7 @@ namespace HumaneSociety
             else
             {
                 animalShotFromDb.ShotId = shotFromDb.ShotId;
+                animalShotFromDb.DateReceived = DateTime.Now;
                 db.SubmitChanges();
             }
         }

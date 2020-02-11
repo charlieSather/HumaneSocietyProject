@@ -55,15 +55,15 @@ namespace HumaneSociety
             //Query.RunEmployeeQueries(greg, "read");
             //Query.AddAnimal(dog);
 
-            var result = Query.SearchForAnimalsByMultipleTraits(traits).ToList();
+           // var result = Query.SearchForAnimalsByMultipleTraits(traits).ToList();
 
-            result.ForEach(x => Console.WriteLine(x.Name));
+            //result.ForEach(x => Console.WriteLine(x.Name));
 
-            Parse.CSVFile("animals.csv");
+            //Parse.CSVFile("animals.csv");
 
-            Console.ReadLine();
+           // Console.ReadLine();
 
-          //PointOfEntry.Run();
+            PointOfEntry.Run();
         }
     }
 }
