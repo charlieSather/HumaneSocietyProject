@@ -27,7 +27,7 @@ namespace HumaneSociety
                         KidFriendly = StringIntToBoolean(animal[4]),
                         PetFriendly = StringIntToBoolean(animal[5]),
                         Gender = animal[6],
-                        AdoptionStatus = animal[7],
+                        AdoptionStatus = CorrectAdoptionStatus(animal[7]),
                         CategoryId = IsNumber(animal[8]) ? Int32.Parse(animal[8]) : (int?)null,
                         DietPlanId = IsNumber(animal[8]) ? Int32.Parse(animal[9]) : (int?)null,
                         EmployeeId = IsNumber(animal[8]) ? Int32.Parse(animal[10]) : (int?)null
@@ -42,6 +42,9 @@ namespace HumaneSociety
         public static bool StringIntToBoolean(string str) => str == "1" ? true : str == "0" ? false : false;
 
         public static bool IsNumber(string input) => new Regex(@"^\d+$").IsMatch(input) ? true : false;
+
+        public static string CorrectAdoptionStatus(string input) => input == "not adopted" ? "Available" : input;
+
 
     }
 }

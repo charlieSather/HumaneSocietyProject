@@ -325,14 +325,35 @@ namespace HumaneSociety
 
         internal static void RemoveAnimal(Animal animal)
         {
+            Room roomFromDb = null;
+            AnimalShot animalShotFromDb = null;
+            Adoption adoptionFromDb = null;
             try
             {
+                roomFromDb = db.Rooms.FirstOrDefault(a => a.AnimalId == animal.AnimalId);
+                if (roomFromDb != null)
+                {
+                    roomFromDb.AnimalId = (int?)null;
+                    db.SubmitChanges();
+                }
+                animalShotFromDb = db.AnimalShots.FirstOrDefault(a => a.AnimalId == animal.AnimalId);
+                if (animalShotFromDb != null)
+                {
+                    db.AnimalShots.DeleteOnSubmit(animalShotFromDb);
+                    db.SubmitChanges();
+                }
+                adoptionFromDb = db.Adoptions.FirstOrDefault(a => a.AnimalId == animal.AnimalId);
+                if (adoptionFromDb != null)
+                {
+                    db.Adoptions.DeleteOnSubmit(adoptionFromDb);
+                    db.SubmitChanges();
+                }
                 db.Animals.DeleteOnSubmit(animal);
                 db.SubmitChanges();
             }
-            catch(Exception)
+            catch (Exception ex)
             {
-                UserInterface.DisplayUserOptions("Error deleting animal from database");
+                UserInterface.DisplayUserOptions(ex.Message);
             }
         }
 
