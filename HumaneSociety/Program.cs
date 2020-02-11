@@ -51,7 +51,7 @@ namespace HumaneSociety
 
             Query.RunEmployeeQueries(greg, "update");
 
-            
+
             //Query.RunEmployeeQueries(greg,"delete");
             //Query.RunEmployeeQueries(greg, "read");
             //Query.AddAnimal(dog);
@@ -62,7 +62,7 @@ namespace HumaneSociety
 
             Console.ReadLine();
 
-          //PointOfEntry.Run();
+            PointOfEntry.Run();
         }
     }
 }
