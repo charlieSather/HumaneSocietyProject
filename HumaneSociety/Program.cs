@@ -25,40 +25,41 @@ namespace HumaneSociety
                 DietPlanId = 1,
                 EmployeeId = 1
             };
-            Dictionary<int, string> traits = new Dictionary<int, string> { { 1, "cat" }, { 2, "Frisky" } };
-            Animal frisky = Query.GetAnimalByID(Query.SearchForAnimalsByMultipleTraits(traits).FirstOrDefault().AnimalId);
+            Dictionary<int, string> traits = new Dictionary<int, string> { { 1, "cat" }, { 2, "Frisky" }, { 5, "1" } };
+            Dictionary<int, string> updates = new Dictionary<int, string> { { 1, "dog" }, { 2, "wrex" }, { 3, "50" },{ 4, "2000" }, { 5, "False" } };
+            //Animal frisky = Query.GetAnimalByID(Query.SearchForAnimalsByMultipleTraits(traits).FirstOrDefault().AnimalId);
             Animal nemo = Query.GetAnimalByID(2);
             Animal wrex = Query.GetAnimalByID(3);
-
+            Query.UpdateAnimal(wrex.AnimalId,updates);
             Client stjohn = Query.GetClient("stjohn", "iliketurtles");
 
-            Adoption adoption = new Adoption
-            {
-                ClientId = stjohn.ClientId,
-                AnimalId = frisky.AnimalId,
-                ApprovalStatus = "Pending",
-                AdoptionFee = 75,
-                PaymentCollected = false,
-            };
+            
 
-            Query.Adopt(frisky, stjohn);
-            Query.Adopt(nemo, stjohn);
-            Query.Adopt(wrex, stjohn);
+            //Query.Adopt(frisky, stjohn);
+            //Query.Adopt(nemo, stjohn);
+            //Query.Adopt(wrex, stjohn);
 
-            Query.UpdateAdoption(true, Query.GetPendingAdoptions().FirstOrDefault());
-            Query.UpdateAdoption(false, Query.GetPendingAdoptions().FirstOrDefault());
-            Query.UpdateAdoption(false, Query.GetPendingAdoptions().FirstOrDefault());
+            //Query.UpdateAdoption(true, Query.GetPendingAdoptions().FirstOrDefault());
+            //Query.UpdateAdoption(false, Query.GetPendingAdoptions().FirstOrDefault());
+            //Query.UpdateAdoption(false, Query.GetPendingAdoptions().FirstOrDefault());
 
-            Query.RunEmployeeQueries(greg, "update");
+            //Query.RunEmployeeQueries(greg, "create");
+            //Query.RunEmployeeQueries(new Employee { FirstName = "Gregory", LastName = "Smithy", Email = "Gsmithy@yahoo.com", EmployeeNumber = 10 }, "update");
+            //Query.RunEmployeeQueries(new Employee { FirstName = "", LastName = "", Email = "" }, "update");
+            //Query.RunEmployeeQueries(greg, "delete");
 
 
-            //Query.RunEmployeeQueries(greg,"delete");
+            //Query.UpdateShot("rabies", wrex);
+            //Query.UpdateShot("malaria", wrex);
+
             //Query.RunEmployeeQueries(greg, "read");
             //Query.AddAnimal(dog);
 
             var result = Query.SearchForAnimalsByMultipleTraits(traits).ToList();
 
             result.ForEach(x => Console.WriteLine(x.Name));
+
+            Parse.CSVFile("animals.csv");
 
             Console.ReadLine();
 
