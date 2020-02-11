@@ -55,19 +55,18 @@ namespace HumaneSociety
             //Query.RunEmployeeQueries(greg, "read");
             //Query.AddAnimal(dog);
 
-            // var result = Query.SearchForAnimalsByMultipleTraits(traits).ToList();
+            //var result = Query.SearchForAnimalsByMultipleTraits(traits).ToList();
 
             //result.ForEach(x => Console.WriteLine(x.Name));
 
-            //Parse.CSVFile("animals.csv");
+            Parse.CSVFile("animals.csv");
 
-
-            Query.RemoveAnimal(Query.GetAnimalByID(1));
-            Query.RemoveAnimal(Query.GetAnimalByID(2));
-            Query.RemoveAnimal(Query.GetAnimalByID(3));
-            Console.ReadLine();
+            //Console.ReadLine();
 
             //PointOfEntry.Run();
+            //Query.RemoveAnimal(Query.GetAnimalByID(12));
+            //Query.RemoveAnimal(Query.GetAnimalByID(13));
+            //Query.RemoveAnimal(Query.GetAnimalByID(14));
         }
     }
 }
