@@ -253,8 +253,28 @@ namespace HumaneSociety
         // TODO: Animal CRUD Operations
         internal static void AddAnimal(Animal animal)
         {
-            db.Animals.InsertOnSubmit(animal);
-            db.SubmitChanges();
+            Room availableRoom = null;
+            try
+            {
+                //available room will be set to whatever room has the first case of an animal id being null
+                //otherwise, if there are no rooms with no animal id, the available room will remain null
+                availableRoom = db.Rooms.FirstOrDefault(a => a.AnimalId == null);
+                if(availableRoom == null)
+                {
+                    UserInterface.DisplayUserOptions("Sorry, no more available rooms, can't add animal.");
+                }
+                else
+                {
+                    db.Animals.InsertOnSubmit(animal);
+                    db.SubmitChanges();
+                    availableRoom.AnimalId = animal.AnimalId;
+                    db.SubmitChanges();
+                }
+            }
+            catch(Exception)
+            {
+                UserInterface.DisplayUserOptions("There are no available rooms");
+            }
         }
 
         internal static Animal GetAnimalByID(int id)
@@ -304,9 +324,41 @@ namespace HumaneSociety
         }
         
         // TODO: Animal Multi-Trait Search
-        internal static IQueryable<Animal> SearchForAnimalsByMultipleTraits(Dictionary<int, string> updates) // parameter(s)?
+        internal static IQueryable<Animal> SearchForAnimalsByMultipleTraits(Dictionary<int, string> traits) // parameter(s)?
         {
-            throw new NotImplementedException();
+            var animals = db.Animals.AsQueryable();
+            
+            foreach (var trait in traits)
+            {
+                switch (trait.Key)
+                {
+                    case 1:
+                        animals = animals.Where(x => x.Category.Name == trait.Value);
+                        break;
+                    case 2:
+                        animals = animals.Where(x => x.Name == trait.Value);
+                        break;
+                    case 3:
+                        animals = animals.Where(x => x.Age == Int32.Parse(trait.Value));
+                        break;
+                    case 4:
+                        animals = animals.Where(x => x.Demeanor == trait.Value);
+                        break;
+                    case 5:
+                        animals = animals.Where(x => x.KidFriendly == Convert.ToBoolean(trait.Value));
+                        break;
+                    case 6:
+                        animals = animals.Where(x => x.PetFriendly == Convert.ToBoolean(trait.Value));
+                        break;
+                    case 7:
+                        animals = animals.Where(x => x.Weight == Int32.Parse(trait.Value));
+                        break;
+                    case 8:
+                        animals = animals.Where(x => x.AnimalId == Int32.Parse(trait.Value));
+                        break;
+                }
+            }
+            return animals;
         }
          
         // TODO: Misc Animal Things
@@ -317,7 +369,7 @@ namespace HumaneSociety
         
         internal static Room GetRoom(int animalId)
         {
-            return db.Rooms.Where(a => a.AnimalId == animalId).FirstOrDefault();
+            return db.Rooms.FirstOrDefault(a => a.AnimalId == animalId);
         }
         
         internal static int GetDietPlanId(string dietPlanName)
@@ -328,24 +380,21 @@ namespace HumaneSociety
         // TODO: Adoption CRUD Operations
         internal static void Adopt(Animal animal, Client client)
         {
-            if(animal.AdoptionStatus == "available")
+            if(animal.AdoptionStatus == "Available")
             {
                 try
                 {
                     Adoption adoption = new Adoption();
                     adoption.ClientId = client.ClientId;
                     adoption.AnimalId = animal.AnimalId;
-                    adoption.ApprovalStatus = "pending";
-                    animal.AdoptionStatus = "pending";
+                    adoption.ApprovalStatus = "Pending";
+                    animal.AdoptionStatus = "Pending";
                     adoption.AdoptionFee = 75;
                     adoption.PaymentCollected = false;
 
-                    client.Adoptions.Add(adoption);
-                    animal.Adoptions.Add(adoption);
-
                     db.Adoptions.InsertOnSubmit(adoption);
-                    db.SubmitChanges();
 
+                    db.SubmitChanges();
                 }
                 catch (Exception)
                 {
@@ -360,28 +409,94 @@ namespace HumaneSociety
 
         internal static IQueryable<Adoption> GetPendingAdoptions()
         {
-            throw new NotImplementedException();
+            return db.Adoptions.Where(a => a.ApprovalStatus == "pending" || a.ApprovalStatus == "Pending");
         }
 
         internal static void UpdateAdoption(bool isAdopted, Adoption adoption)
         {
-            throw new NotImplementedException();
+            try 
+            {
+                if (isAdopted)
+                {
+                    db.Adoptions.Where(a => a.AnimalId == adoption.AnimalId && a.ClientId == adoption.ClientId).FirstOrDefault().ApprovalStatus = "Approved";
+                    db.Animals.Where(a => a.AnimalId == adoption.AnimalId).FirstOrDefault().AdoptionStatus = "Approved";
+                }
+                else
+                {
+                    db.Animals.Where(a => a.AnimalId == adoption.AnimalId).FirstOrDefault().AdoptionStatus = "Available";
+                    RemoveAdoption(adoption.AnimalId, adoption.ClientId);
+                }
+                db.SubmitChanges();
+            }
+            catch (Exception)
+            {
+                UserInterface.DisplayUserOptions("That adoption isn't in the database.");
+            }
         }
 
         internal static void RemoveAdoption(int animalId, int clientId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                db.Adoptions.DeleteOnSubmit(db.Adoptions.FirstOrDefault(a => a.AnimalId == animalId && a.ClientId == clientId));
+            }
+            catch (Exception)
+            {
+                UserInterface.DisplayUserOptions("Error on trying to delete adoption.");
+            }
         }
 
         // TODO: Shots Stuff
         internal static IQueryable<AnimalShot> GetShots(Animal animal)
         {
-            throw new NotImplementedException();
+            return db.AnimalShots.Where(x => x.AnimalId == animal.AnimalId);
         }
 
         internal static void UpdateShot(string shotName, Animal animal)
         {
-            throw new NotImplementedException();
+            AnimalShot animalShotFromDb = null;
+            Shot shotFromDb = db.Shots.FirstOrDefault(x => x.Name == shotName);
+            
+            if (shotFromDb is null)
+            {
+                Shot shot = new Shot
+                {
+                    Name = shotName
+                };
+                db.Shots.InsertOnSubmit(shot);
+                db.SubmitChanges();
+                
+                shotFromDb = shot;
+            }
+            
+            try
+            {
+                animalShotFromDb = db.AnimalShots.Where(x => x.AnimalId == animal.AnimalId && x.ShotId == animalShotFromDb.ShotId).FirstOrDefault();
+            }
+            catch
+            {
+                UserInterface.DisplayUserOptions("Couldn't find animal shot to update");
+                return;
+            }
+            
+            if (animalShotFromDb is null)
+            {
+                db.AnimalShots.InsertOnSubmit(new AnimalShot { AnimalId = animal.AnimalId, ShotId = shotFromDb.ShotId, DateReceived = DateTime.Now });
+            }
+            else
+            {
+                animalShotFromDb.ShotId = shotFromDb.ShotId;
+            }
+            
+            try
+            {
+                db.SubmitChanges();
+            }
+            catch
+            {
+                UserInterface.DisplayUserOptions("Error Updating AnimalShot");
+            }
+
         }
     }
 }
