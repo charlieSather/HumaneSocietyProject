@@ -290,6 +290,20 @@ namespace HumaneSociety
 
         internal static void UpdateAnimal(int animalId, Dictionary<int, string> updates)
         {
+            try
+            {
+                if (db.Animals.FirstOrDefault(a => a.AnimalId == animalId) is null)
+                {
+                    UserInterface.DisplayUserOptions("Animal does not exist in database, cannot update.");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                UserInterface.DisplayUserOptions(ex.Message);
+            }
+
+
             foreach (var update in updates)
             {
                 switch (update.Key)
