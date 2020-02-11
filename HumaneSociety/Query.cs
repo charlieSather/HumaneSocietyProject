@@ -301,24 +301,27 @@ namespace HumaneSociety
                         db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Name = update.Value;
                         break;
                     case 3:
-                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Age = Int32.Parse(update.Value);
+                        int age;
+                        if( Int32.TryParse(update.Value, out age)) { db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Age = age; };                        
                         break;
                     case 4:
                         db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Demeanor = update.Value;
                         break;
                     case 5:
-                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().KidFriendly = Convert.ToBoolean(update.Value);
+                        try { db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().KidFriendly = 
+                                Convert.ToBoolean(update.Value); }catch(Exception e) { UserInterface.DisplayUserOptions(e.Message); }
                         break;
                     case 6:
-                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().PetFriendly = Convert.ToBoolean(update.Value);
+                        try { db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().PetFriendly = 
+                                Convert.ToBoolean(update.Value); }catch(Exception e) { UserInterface.DisplayUserOptions(e.Message); }
                         break;
                     case 7:
-                        db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Weight = Int32.Parse(update.Value);
+                        int weight;
+                        if (Int32.TryParse(update.Value, out weight)) { db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Weight = weight; }
                         break;
                     default:
                         break;
                 }
-                //db.SubmitChanges();
             }
             db.SubmitChanges();
         }
@@ -328,6 +331,10 @@ namespace HumaneSociety
             Room roomFromDb = null;
             AnimalShot animalShotFromDb = null;
             Adoption adoptionFromDb = null;
+            if(animal is null)
+            {
+                return;
+            }
 
             try
             {

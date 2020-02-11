@@ -64,9 +64,11 @@ namespace HumaneSociety
             //Console.ReadLine();
 
             //PointOfEntry.Run();
-            //Query.RemoveAnimal(Query.GetAnimalByID(12));
-            //Query.RemoveAnimal(Query.GetAnimalByID(13));
-            //Query.RemoveAnimal(Query.GetAnimalByID(14));
+            Query.RemoveAnimal(Query.GetAnimalByID(12));
+            Query.RemoveAnimal(Query.GetAnimalByID(13));
+            Query.RemoveAnimal(Query.GetAnimalByID(14));
+
+            Console.ReadLine();
         }
     }
 }
