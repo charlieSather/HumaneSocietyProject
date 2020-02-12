@@ -11,22 +11,22 @@ namespace HumaneSociety
         static void Main(string[] args)
         {
             //Employee greg = new Employee { FirstName = "Greg", LastName = "Smithy", UserName = "gSmith", Password = "pw", EmployeeNumber = 10, Email = "GSmith@gmail.com" };
-            Animal dog = new Animal
-            {
-                Name = "benny",
-                Weight = 20,
-                Age = 5,
-                Demeanor = "passive",
-                KidFriendly = true,
-                PetFriendly = true,
-                Gender = "male",
-                AdoptionStatus = "available",
-                CategoryId = 1,
-                DietPlanId = 1,
-                EmployeeId = 1
-            };
+            //Animal dog = new Animal
+            //{
+            //    Name = "benny",
+            //    Weight = 20,
+            //    Age = 5,
+            //    Demeanor = "passive",
+            //    KidFriendly = true,
+            //    PetFriendly = true,
+            //    Gender = "male",
+            //    AdoptionStatus = "available",
+            //    CategoryId = 1,
+            //    DietPlanId = 1,
+            //    EmployeeId = 1
+            //};
             //Dictionary<int, string> traits = new Dictionary<int, string> { { 1, "cat" }, { 2, "Frisky" }, { 5, "1" } };
-            Dictionary<int, string> updates = new Dictionary<int, string> { { 1, "dog" }, { 2, "Jeff" }, { 3, "50" },{ 4, "2000" }, { 5, "right" } };
+            //Dictionary<int, string> updates = new Dictionary<int, string> { { 1, "dog" }, { 2, "Jeff" }, { 3, "50" },{ 4, "2000" }, { 5, "right" } };
             //Animal frisky = Query.GetAnimalByID(Query.SearchForAnimalsByMultipleTraits(traits).FirstOrDefault().AnimalId);
             //Animal nemo = Query.GetAnimalByID(2);
             //Animal wrex = Query.GetAnimalByID(3);
@@ -71,7 +71,7 @@ namespace HumaneSociety
             //Query.RemoveAnimal(Query.GetAnimalByID(4));
             //Query.RemoveAnimal(Query.GetAnimalByID(14));
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
     }
 }
