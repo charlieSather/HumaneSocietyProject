@@ -187,7 +187,7 @@ namespace HumaneSociety
 
         internal static void AddEmployee(Employee employee)
         {
-            Employee employeeFromDb = db.Employees.Where(e => e.EmployeeNumber == employee.EmployeeNumber).FirstOrDefault();
+            Employee employeeFromDb = db.Employees.FirstOrDefault(e => e.EmployeeNumber == employee.EmployeeNumber);
 
             if (employeeFromDb is null)
             {
@@ -316,18 +316,26 @@ namespace HumaneSociety
                         break;
                     case 3:
                         int age;
-                        if( Int32.TryParse(update.Value, out age)) { db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Age = age; };                        
+                        if (Int32.TryParse(update.Value, out age)) { db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Age = age; };
                         break;
                     case 4:
                         db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().Demeanor = update.Value;
                         break;
                     case 5:
-                        try { db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().KidFriendly = 
-                                Convert.ToBoolean(update.Value); }catch(Exception e) { UserInterface.DisplayUserOptions(e.Message); }
+                        try
+                        {
+                            db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().KidFriendly =
+                              Convert.ToBoolean(update.Value);
+                        }
+                        catch (Exception e) { UserInterface.DisplayUserOptions(e.Message); }
                         break;
                     case 6:
-                        try { db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().PetFriendly = 
-                                Convert.ToBoolean(update.Value); }catch(Exception e) { UserInterface.DisplayUserOptions(e.Message); }
+                        try
+                        {
+                            db.Animals.Where(a => a.AnimalId == animalId).FirstOrDefault().PetFriendly =
+                              Convert.ToBoolean(update.Value);
+                        }
+                        catch (Exception e) { UserInterface.DisplayUserOptions(e.Message); }
                         break;
                     case 7:
                         int weight;
@@ -345,7 +353,7 @@ namespace HumaneSociety
             Room roomFromDb = null;
             AnimalShot animalShotFromDb = null;
             Adoption adoptionFromDb = null;
-            if(animal is null)
+            if (animal is null)
             {
                 return;
             }
@@ -353,7 +361,7 @@ namespace HumaneSociety
             try
             {
                 roomFromDb = db.Rooms.FirstOrDefault(a => a.AnimalId == animal.AnimalId);
-                if(roomFromDb != null)
+                if (roomFromDb != null)
                 {
                     roomFromDb.AnimalId = (int?)null;
                     db.SubmitChanges();
@@ -376,7 +384,7 @@ namespace HumaneSociety
                 db.Animals.DeleteOnSubmit(animal);
                 db.SubmitChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //UserInterface.DisplayUserOptions("Error deleting animal from database");
                 UserInterface.DisplayUserOptions(ex.Message);
@@ -398,7 +406,7 @@ namespace HumaneSociety
                         animals = animals.Where(x => x.Name == trait.Value);
                         break;
                     case 3:
-                        animals = animals.Where(x => x.Age == (Parse.IsNumber(trait.Value) ? Int32.Parse(trait.Value) : (int?) null));
+                        animals = animals.Where(x => x.Age == (Parse.IsNumber(trait.Value) ? Int32.Parse(trait.Value) : (int?)null));
                         break;
                     case 4:
                         animals = animals.Where(x => x.Demeanor == trait.Value);
@@ -410,10 +418,10 @@ namespace HumaneSociety
                         animals = animals.Where(x => x.PetFriendly == Parse.StringIntToBoolean(trait.Value));
                         break;
                     case 7:
-                        animals = animals.Where(x => x.Weight == (Parse.IsNumber(trait.Value)? Int32.Parse(trait.Value) : (int?) null));
+                        animals = animals.Where(x => x.Weight == (Parse.IsNumber(trait.Value) ? Int32.Parse(trait.Value) : (int?)null));
                         break;
                     case 8:
-                        animals = animals.Where(x => x.AnimalId == (Parse.IsNumber(trait.Value)? Int32.Parse(trait.Value) : (int?) null));
+                        animals = animals.Where(x => x.AnimalId == (Parse.IsNumber(trait.Value) ? Int32.Parse(trait.Value) : (int?)null));
                         break;
                 }
             }
@@ -466,7 +474,7 @@ namespace HumaneSociety
             }
         }
 
-        internal static IQueryable<Adoption> GetPendingAdoptions()
+        internal static IQueryable<Adoption> GetPendingAdoptions() 
         {
             return db.Adoptions.Where(a => a.ApprovalStatus == "pending" || a.ApprovalStatus == "Pending");
         }
@@ -499,9 +507,9 @@ namespace HumaneSociety
             {
                 db.Adoptions.DeleteOnSubmit(db.Adoptions.FirstOrDefault(a => a.AnimalId == animalId && a.ClientId == clientId));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                UserInterface.DisplayUserOptions("Error on trying to delete adoption.");
+                UserInterface.DisplayUserOptions(new List<string> { "Error on trying to delete adoption.", ex.Message });
             }
         }
 
@@ -530,24 +538,24 @@ namespace HumaneSociety
             try
             {
                 animalShotFromDb = db.AnimalShots.Where(x => x.AnimalId == animal.AnimalId && x.ShotId == shotFromDb.ShotId).FirstOrDefault();
+                if (animalShotFromDb is null)
+                {
+                    db.AnimalShots.InsertOnSubmit(new AnimalShot { AnimalId = animal.AnimalId, ShotId = shotFromDb.ShotId, DateReceived = DateTime.Now });
+                    db.SubmitChanges();
+                }
+                else
+                {
+                    animalShotFromDb.ShotId = shotFromDb.ShotId;
+                    animalShotFromDb.DateReceived = DateTime.Now;
+                    db.SubmitChanges();
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                UserInterface.DisplayUserOptions("Error querying database looking for animalShot");
-                return;
+                UserInterface.DisplayUserOptions(new List<string> { "Error querying database looking for animalShot", ex.Message });
             }
-            if (animalShotFromDb is null)
-            {
-                db.AnimalShots.InsertOnSubmit(new AnimalShot { AnimalId = animal.AnimalId, ShotId = shotFromDb.ShotId, DateReceived = DateTime.Now });
-                db.SubmitChanges();
-            }
-            else
-            {
-                animalShotFromDb.ShotId = shotFromDb.ShotId;
-                animalShotFromDb.DateReceived = DateTime.Now;
-                db.SubmitChanges();
-            }
+
         }
-      
+
     }
 }

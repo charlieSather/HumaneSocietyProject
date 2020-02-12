@@ -13,7 +13,7 @@ INSERT INTO DietPlans VALUES('rodentplan','foodpellets',1);
 
 INSERT INTO Animals VALUES('Frisky',10,6,'Lazy',1,1,'Female','Available',2,2,2);
 INSERT INTO Animals VALUES('Nemo',2,4,'Curious',1,1,'Male','Available',4,4,1);
-INSERT INTO Animals VALUES('Wrex',200,7,'Aggressive',1,0,'Male','Pending',1,1,4);
+INSERT INTO Animals VALUES('Wrex',200,7,'Aggressive',1,0,'Male','Available',1,1,4);
 INSERT INTO Animals VALUES('Rafiki',100,75,'Wise',1,1,'Male','Available',3,3,3);
 INSERT INTO Animals VALUES('Stuart Little',3,1,'Curious',1,1,'Male','Available',5,5,5);
 

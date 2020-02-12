@@ -26,14 +26,14 @@ namespace HumaneSociety
                 EmployeeId = 1
             };
             //Dictionary<int, string> traits = new Dictionary<int, string> { { 1, "cat" }, { 2, "Frisky" }, { 5, "1" } };
-            Dictionary<int, string> updates = new Dictionary<int, string> { { 1, "dog" }, { 2, "Wrex" }, { 3, "50" },{ 4, "2000" }, { 5, "False" } };
-            ////Animal frisky = Query.GetAnimalByID(Query.SearchForAnimalsByMultipleTraits(traits).FirstOrDefault().AnimalId);
+            Dictionary<int, string> updates = new Dictionary<int, string> { { 1, "dog" }, { 2, "Jeff" }, { 3, "50" },{ 4, "2000" }, { 5, "right" } };
+            //Animal frisky = Query.GetAnimalByID(Query.SearchForAnimalsByMultipleTraits(traits).FirstOrDefault().AnimalId);
             //Animal nemo = Query.GetAnimalByID(2);
             //Animal wrex = Query.GetAnimalByID(3);
             //Query.UpdateAnimal(wrex.AnimalId,updates);
             //Client stjohn = Query.GetClient("stjohn", "iliketurtles");
 
-            Query.UpdateAnimal(dog.AnimalId, updates);
+            //Query.UpdateAnimal(4, updates);
 
 
             //Query.Adopt(frisky, stjohn);
@@ -62,14 +62,14 @@ namespace HumaneSociety
 
             //result.ForEach(x => Console.WriteLine(x.Name));
 
-            Parse.CSVFile("animals.csv");
+            //Parse.CSVFile("animals.csv");
 
             //Console.ReadLine();
 
-            //PointOfEntry.Run();
-            Query.RemoveAnimal(Query.GetAnimalByID(12));
-            Query.RemoveAnimal(Query.GetAnimalByID(13));
-            Query.RemoveAnimal(Query.GetAnimalByID(14));
+            PointOfEntry.Run();
+            //Query.RemoveAnimal(Query.GetAnimalByID(12));
+            //Query.RemoveAnimal(Query.GetAnimalByID(4));
+            //Query.RemoveAnimal(Query.GetAnimalByID(14));
 
             Console.ReadLine();
         }

@@ -28,9 +28,9 @@ namespace HumaneSociety
                         PetFriendly = StringIntToBoolean(animal[5]),
                         Gender = animal[6],
                         AdoptionStatus = CorrectAdoptionStatus(animal[7]),
-                        CategoryId = IsNumber(animal[8]) ? Int32.Parse(animal[8]) : (int?)null,
-                        DietPlanId = IsNumber(animal[8]) ? Int32.Parse(animal[9]) : (int?)null,
-                        EmployeeId = IsNumber(animal[8]) ? Int32.Parse(animal[10]) : (int?)null
+                        CategoryId = IsNumber(animal[8]) ? Int32.Parse(animal[8]) : (int?) null,
+                        DietPlanId = IsNumber(animal[8]) ? Int32.Parse(animal[9]) : (int?) null,
+                        EmployeeId = IsNumber(animal[8]) ? Int32.Parse(animal[10]) : (int?) null
                     });
                 }
             }
